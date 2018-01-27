@@ -7,6 +7,7 @@ Artemis aims to automate the deployment and the documentation of a cloud infrast
 It will help to:
 
 * automate processes
+* deploy and maintain cloud infrastructure (Origin-OpenShift, OpenStack, Satellite, Kubernetes, Docker containers ...)
 * document the infrastructure
 * plan resources exhausion
 * master changes with a continuis integration (CI) and a continious deployment (CD)
