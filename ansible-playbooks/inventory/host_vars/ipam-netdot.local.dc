@@ -1,0 +1,3 @@
+---
+#ansible_host: ipam-netdot.local.dc
+#ansible_user: root

@@ -1,0 +1,13 @@
+---
+
+- name: deploy artemis host
+  hosts: all
+  roles:
+     - { role: role_requirements }
+     - { role: role_freeipa-server }
+     - { role: role_docker-install }
+     - { role: role_docker-netdot }
+     - { role: role_docker-gitlab-ce }
+     - { role: role_docker-gitlab-runner }
+  tags:
+    - artemis_deploy
