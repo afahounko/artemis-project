@@ -22,7 +22,7 @@ It will help to:
   * LibVirt as Hypervisor module
   * Ansible for the automation tool
   * Git for local config file storage and versionning
-  * Python will be the scripting language
+  * Python and Jinja2  will be the scripting languages
 
 
 # Requirements
