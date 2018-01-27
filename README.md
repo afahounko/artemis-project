@@ -11,13 +11,7 @@ It will help to:
 * plan resources exhausion
 * master changes with a continuis integration (CI) and a continious deployment (CD)
 
-
-and OpenvSwitch, Libvirt and Ansible on a bare metal device like Intel Nuc or any devices compatible with Linux Kernel with network Interface.
-
-  
-
 # Tools in place
-
 
   * Netdot (IPAM)
   * FreeIPA
