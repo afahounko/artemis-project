@@ -1,0 +1,3 @@
+---
+#ansible_host: centos-builder.local.dc
+ansible_user: centos

@@ -1,2 +1,54 @@
 ---
 # tasks file for ansible-playbooks/roles/role_requirements
+
+
+# Install required packages    
+- name: install required packages
+  package: name={{item}} state=present
+  with_items:
+    - "{{ default_rpm[ansible_distribution | lower] }}"
+  when: >
+     default_rpm[ansible_distribution | lower] is defined
+
+
+# Set system environment
+- name: set environment
+  copy: src=env/environment dest=/etc/environment owner=root group=root mode=644 backup=yes
+
+
+# Install epel packages    
+- name: epel packages
+  package: name={{item}} state=present
+  with_items:
+    - "{{ epel_repo[ansible_distribution | lower] }}"
+  when: >
+     epel_repo[ansible_distribution | lower] is defined
+
+
+# Install optional packages    
+- name: optional packages
+  package: name={{item}} state=present
+  with_items:
+    - "{{ optional_rpm[ansible_distribution | lower] }}"
+  when: >
+     optional_rpm[ansible_distribution | lower] is defined
+  ignore_errors: true
+
+
+# Install entropy packages  
+- name: entropy packages
+  package: name={{item}} state=present
+  with_items:
+    - "{{ entropy_facts[ansible_distribution | lower].rpm }}"
+  when: >
+     entropy_facts[ansible_distribution | lower].rpm is defined
+
+
+# start entropy service
+- name: start entropy service
+  service:
+    name: "{{ entropy_facts[ansible_distribution | lower].service }}"
+    state: started
+    enabled: yes
+  when: >
+     entropy_facts[ansible_distribution | lower].service is defined

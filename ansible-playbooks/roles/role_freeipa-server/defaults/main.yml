@@ -1,2 +1,26 @@
 ---
 # defaults file for ansible-playbooks/roles/role_freeipa-server
+
+ipa_rpm:
+  fedora:
+    - freeipa-common
+    - freeipa-server
+    - freeipa-server-dns
+
+  redhat:
+    - ipa-server-common
+    - ipa-server
+    - ipa-server-dns
+
+
+freeipa:
+  name: "{{ ansible_hostname }}"
+  domain: "{{ ansible_domain | default('local.dc') }}"
+  fqdn: "{{ ansible_fqdn }}"
+  realm: "{{ ansible_domain | default('LOCAL.DC') }}"
+  directory_password: 'directoryIPA2018'
+  admin_password: 'adminIPA2018'
+  # ip: 10.50.0.10
+  dns_forwarders:
+    - 8.8.8.8
+    - 8.8.4.4

@@ -27,7 +27,10 @@ It will help to:
 
 # Requirements
 
-  Device with a chips compatible with Linux Kernel. In our case we use Redhat 7, CentOS 7 or Fedora 24
+  Device with a chips compatible with Linux Kernel. In our case we use Redhat 7, CentOS 7 or Fedora 27
+
+~~~
   RAM : 8 GB
   HDD:  40
   vCPU: 4
+~~~

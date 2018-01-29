@@ -1,4 +1,2 @@
-[artemis]
 centos-builder.local.dc
 fedora-builder.local.dc
-#ipam-netdot.local.dc

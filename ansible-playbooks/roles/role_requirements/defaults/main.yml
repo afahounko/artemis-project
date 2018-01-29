@@ -1,2 +1,62 @@
 ---
 # defaults file for ansible-playbooks/roles/role_requirements
+
+default_rpm:
+  centos:
+    - libselinux-python
+  redhat:
+    - libselinux-python
+  fedora:
+    - libselinux-python
+
+
+optional_rpm:
+  centos:
+    - vim
+    - atop
+    - htop
+    - git
+    - ansible
+  redhat:
+    - vim
+    - atop
+    - htop
+    - git
+    - ansible
+  fedora:
+    - vim
+    - atop
+    - htop
+    - git
+    - ansible
+
+
+
+epel_repo:
+  centos:
+    - epel-release
+  redhat:
+    - https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+
+
+entropy_facts:
+  centos:
+    rpm:
+      - rng-tools
+    service: rngd
+  redhat:
+    rpm:
+      - rng-tools
+    service: rngd
+  fedora:
+    rpm:
+      - rng-tools
+    service: rngd
+
+
+
+
+
+
+
+

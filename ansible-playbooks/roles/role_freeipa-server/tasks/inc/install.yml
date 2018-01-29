@@ -1,0 +1,54 @@
+---
+
+# set hostname
+- name: set hostname
+  hostname: 
+    name: "{{ ipa.fqdn }}"
+
+# copy /etc/hosts file
+- name: copy hosts file
+  template:
+    src: hosts.j2
+    dest: /etc/hosts
+    backup: yes
+
+
+# Install freeIPA packages    
+- name: ipa packages
+  package: name={{item}} state=present
+  with_items:
+    - "{{ ipa_rpm[ansible_os_family | lower] }}"
+
+
+# check dns
+- name: check existing dns
+  command: >
+    dig {{ ipa.domain }} +short ns
+  register: output_dig
+
+
+# - debug: var=output_dig
+
+
+# - name: fail if DNS already exists
+#   fail:
+#     msg: 'DNS zone {{ipa.domain}}. already exists in DNS'
+#   when: >
+#     output_dig.stdout_lines | length > 0
+
+
+- name: run the ipa-server-install command
+  command: >
+    ipa-server-install -U --setup-dns --hostname={{ ipa.fqdn }} --domain={{ ipa.domain }} --realm={{ ipa.realm | upper }} \
+    --ds-password='{{ ipa.password.directory }}' --admin-password='{{ ipa.password.admin }}'  \
+    --forwarder={{ ipa.dns.forwarders | join(' --forwarder=') }}
+  when: >
+    output_dig.stdout_lines | length > 0
+
+
+- name: installation report
+  debug:
+    msg: 'FreeIPA not installed on {{ ipa.fqdn }}. \nDNS zone {{ipa.domain}}. already exists in DNS'
+  when: >
+    output_dig.stdout_lines | length > 0
+

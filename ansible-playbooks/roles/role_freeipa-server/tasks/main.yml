@@ -1,2 +1,72 @@
 ---
 # tasks file for ansible-playbooks/roles/role_freeipa-server
+
+
+- name: set ipa server settings
+  set_fact:
+    ipa: >-
+       {%- set ipa = {} -%}
+       {%- set freeipa = freeipa | default({}) -%}
+       {%- set ignored = ipa.update({
+          'name': freeipa.name | default( hostvars[inventory_hostname]['ansible_hostname'] ),
+          'hostname': freeipa.hostname | default( hostvars[inventory_hostname]['ansible_hostname'] ),
+          'domain': freeipa.domain | default( hostvars[inventory_hostname]['ansible_domain'] ),
+          'fqdn': freeipa.fqdn | default( hostvars[inventory_hostname]['ansible_fqdn'] ),
+          'realm': freeipa.realm | default( hostvars[inventory_hostname]['ansible_domain'] ),
+          'ip': freeipa.ip | default( hostvars[inventory_hostname]['ansible_default_ipv4']['address'] ),
+          'password': {
+              'directory': freeipa.directory_password | default( 'directoryIPA2018' ),
+              'admin': freeipa.admin_password | default( 'adminIPA2018' ),
+          },
+          'dns': {
+              'forwarders':freeipa.dns_forwarders | default(['8.8.8.8', '8.8.4.4'])
+          }, 
+       }) -%}
+       {{ ipa }}
+
+
+- name: show ipa
+  debug: var=ipa
+
+
+
+# Check if  FreeIPA is installed
+- name: check ipa
+  ipa_host:
+    name: "{{ ipa.fqdn }}"
+    description: "{{ ipa.fqdn }}"
+    ip_address: "{{ ipa.ip }}"
+    state: present
+    ipa_host: "{{ ipa.fqdn }}"
+    ipa_user: admin
+    ipa_pass: "{{ ipa.password.admin }}"
+    validate_certs: no
+  register: output_check_ipa
+  ignore_errors: yes
+
+- name: show freeipa
+  debug: var=output_check_ipa
+
+
+- name: FreeIPA installation
+  include_tasks: inc/install.yml
+  when: >
+    output_check_ipa.failed
+
+
+- name: installation
+  debug:
+    msg: 'FreeIPA is already installed on {{ipa.fqdn}}'
+  when: >
+    not output_check_ipa.failed
+
+
+
+# - fail: msg='EXIT'
+
+# - set_fact:
+#     satellite_is_installed: "{{ False if satellite_is_installed.failed | default(False) or satellite_is_installed.status != 200 else True }}"
+#   tags: [ always ]
+
+
+# - include_tasks: inc/repository/main.yml
