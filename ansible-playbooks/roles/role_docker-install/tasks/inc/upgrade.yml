@@ -1,0 +1,22 @@
+---
+
+- name: debug docker version json
+  debug: msg={{ output_docker_version.stdout | from_json }}
+ 
+
+- name: set facts docker version
+  set_fact:
+    fact_docker_version: >-
+       {{ (output_docker_version.stdout | from_json).Server.Version }} 
+
+
+- name: debug docker version
+  debug: var=fact_docker_version
+
+
+- name: docker version must be  >= {{minimal.docker_version}}
+  debug:
+    msg: "The running docker version must be >= {{minimal.docker_version}}, yours is set to {{ fact_docker_version }}."
+  when: fact_docker_version | version_compare( minimal.docker_version | quote , "<")
+
+

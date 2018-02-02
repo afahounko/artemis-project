@@ -1,0 +1,29 @@
+---
+
+- name: install requirements
+  package: 
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - python-docker-py
+    - dnf-plugins-core
+
+
+- name: download docker-ce repo
+  get_url:
+    url: https://download.docker.com/linux/fedora/docker-ce.repo
+    dest: /etc/yum.repos.d/docker-ce.repo
+
+
+- name: install docker-ce
+  package: 
+    name: docker-ce
+    state: present
+
+
+# start docker-ce service
+- name: start docker-ce service
+  service:
+    name: docker
+    state: started
+    enabled: yes

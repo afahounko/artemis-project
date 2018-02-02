@@ -1,2 +1,25 @@
 ---
 # defaults file for ansible-playbooks/roles/role_docker-install
+
+docker_edition: "ce"
+docker_channel: "edge"
+
+docker_version: "18.01.0"
+docker_install_docker_compose: True
+docker_compose_version: "1.18.0"
+
+minimal:
+  docker_version: "1.13.0"
+  docker_compose_version: "1.10.0"
+
+
+
+docker_users: []
+
+docker_cron_tasks:
+  - job: docker system prune -f
+    name: "Docker clean up"
+    schedule: ["0", "0", "*", "*", "0"]
+
+docker_daemon_options: []
+

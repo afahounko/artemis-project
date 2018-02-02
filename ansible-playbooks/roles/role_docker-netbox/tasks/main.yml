@@ -1,0 +1,42 @@
+---
+# tasks file for ansible-playbooks/roles/role_docker-netdot
+
+# - name: Create a data container
+#   docker_container:
+#     name: mydata
+#     image: centos:latest
+#     volumes:
+#       - /media
+
+# - name: Create volume
+#   docker_volume:
+#     name: "{{ item }}"
+#     # driver: local
+#   with_items:
+#     - netbox-static-files
+#     - netbox-nginx-config
+#     - netbox-media-files
+#     - netbox-report-files
+#     - netbox-postgres-data
+
+
+
+- name: git clone 
+  git:
+    repo: 'https://github.com/ninech/netbox-docker.git'
+    dest: /srv/checkout
+    force: yes
+    # version: release-0.22
+
+
+- name: copy template files
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - { src: netbox.env.j2 , dest: /srv/checkout/netbox.env }
+    - { src: docker-compose.yml.j2 , dest: /srv/checkout/docker-compose.yml }
+
+- name: run the service defined in my_project's docker-compose.yml
+  docker_service:
+    project_src: /srv/checkout

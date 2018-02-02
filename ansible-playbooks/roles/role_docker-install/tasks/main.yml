@@ -1,2 +1,58 @@
 ---
 # tasks file for ansible-playbooks/roles/role_docker-install
+
+
+- name: set facts ansible distribution
+  set_fact:
+    fact_ansible_distribution: >-
+       {%- set fact_ansible_distribution = hostvars[inventory_hostname]['ansible_distribution'] | lower -%}
+       {%- if fact_ansible_distribution in ['centos'] -%}
+         {%- set fact_ansible_distribution = 'redhat' -%}
+       {%- endif -%}
+       {{ fact_ansible_distribution }}
+
+
+- name: check if docker is installed
+  shell: >
+     docker version --format "{{ '{{' }} json . {{ '}}' }}"
+  register: output_docker_version
+  ignore_errors: yes
+
+
+
+- name: upgrade if necessary
+  include_tasks: inc/upgrade.yml
+  when: >
+    output_docker_version.rc | int == 0
+
+
+# - name: debug
+#   debug: var=fact_ansible_distribution
+
+
+- name: docker-ce installation
+  include_tasks: "inc/{{fact_ansible_distribution}}.yml"
+  when: >
+    output_docker_version.rc | int > 0
+
+
+
+# docker-compose
+
+
+- name: installing packages
+  package: 
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - python-setuptools
+
+- name: installing dependencies
+  easy_install:
+    name: pip
+
+- name: installing docker compose
+  pip:
+    name: docker-compose
+    # version: "{{ docker_compose_version if docker_compose_version else omit }}"
+    state: present

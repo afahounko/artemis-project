@@ -30,7 +30,21 @@ It will help to:
   Device with a chips compatible with Linux Kernel. In our case we use Redhat 7, CentOS 7 or Fedora 27
 
 ~~~
-  RAM : 8 GB
-  HDD:  40
+  RAM : 8  GB
+  HDD:  40 GB
   vCPU: 4
+~~~
+
+
+# Troubleshooting
+
+~~~
+
+docker stop $(docker ps -a -q) # stop all docker containers
+docker rm -f $(docker ps -a -q) # remove all docker containers
+docker images -q | xargs docker rmi -f # remove all docker images
+sudo pip uninstall docker-compose # uninstall docker-compose
+
+Then reinstalled docker-compose:
+sudo pip install -U docker-compose
 ~~~
